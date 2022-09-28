@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: env-config
+data:
+  POSTGRES_HOST: {{ .Values.config.host }}
+  POSTGRES_DB: {{ .Values.config.database }}
+  AWS_BUCKET: {{ .Values.config.bucket }}
+  AWS_REGION: {{ .Values.config.region }}
+  AWS_PROFILE: {{ .Values.config.profile }}
+  JWT_SECRET: {{ .Values.config.secret }}
+  URL: {{ .Values.config.end_point }}

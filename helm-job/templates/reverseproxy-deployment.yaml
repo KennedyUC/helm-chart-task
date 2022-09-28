@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Values.proxy.name }}
+spec:
+  selector:
+    matchLabels:
+      service: {{ .Values.proxy.name }}
+  replicas: {{ .Values.proxy.replicas }}
+  template:
+    metadata:
+      annotations:
+        checksum/config: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
+      labels:
+        service: {{ .Values.proxy.name }}
+    spec:
+      containers:
+      - image: {{ .Values.proxy.image }}:{{ .Values.proxy.tag }}
+        name: {{ .Values.proxy.name }}
+        imagePullPolicy: Always
+        resources:
+          requests:
+            memory: "64Mi"
+            cpu: "250m"
+          limits:
+            memory: "1024Mi"
+            cpu: "500m"
+        ports:
+        - containerPort: 8080
+      restartPolicy: Always

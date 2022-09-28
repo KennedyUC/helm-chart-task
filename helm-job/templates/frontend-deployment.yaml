@@ -1,0 +1,44 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Values.frontend.name }}
+spec:
+  selector:
+    matchLabels:
+      service: {{ .Values.frontend.name }}
+  replicas: {{ .Values.frontend.replicas }}
+  template:
+    metadata:
+      annotations:
+        checksum/config: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
+      labels:
+        service: {{ .Values.frontend.name }}
+        api: external
+    spec:
+      containers:
+      - image: {{ .Values.frontend.image }}:{{ .Values.frontend.tag }}
+        name: {{ .Values.frontend.name }}
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 80
+        resources:
+          {{- if .Values.deployment.resources.requests }}
+          requests:
+            memory: {{ .Values.deployment.resources.requests.memory | default "64Mi" | quote }}
+            cpu: {{ .Values.deployment.resources.requests.cpu | default "250m" | quote }}
+          {{- else }}
+          requests:
+            memory: "64Mi"
+            cpu: "250m"
+          {{- end }}
+
+          {{- if .Values.deployment.resources.limits }}
+          limits:
+            memory: {{ .Values.deployment.resources.limits.memory | default "1024Mi" | quote }}
+            cpu: {{ .Values.deployment.resources.limits.cpu | default "500m" | quote }}
+          {{- else }}
+          limits:
+            memory: "1024Mi"
+            cpu: "500m"
+          {{- end }}
+      restartPolicy: Always

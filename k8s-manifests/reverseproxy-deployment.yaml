@@ -1,0 +1,28 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: reverse-proxy
+spec:
+  selector:
+    matchLabels:
+      service: reverse-proxy
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        service: reverse-proxy
+    spec:
+      containers:
+      - image: kennedyuche/reverseproxy:latest
+        name: reverse-proxy
+        imagePullPolicy: Always
+        resources:
+          requests:
+            memory: "64Mi"
+            cpu: "250m"
+          limits:
+            memory: "1024Mi"
+            cpu: "500m"
+        ports:
+        - containerPort: 8080
+      restartPolicy: Always
