@@ -4,7 +4,14 @@ variables:
   NAMESPACE: helm-app
   JOB_NAME: helm-job
 
+stages:
+  - connect
+  - install
+  - deploy
+  - test
+
 connect_k8s:
+  stage: connect
   image: $IMAGE_NAME:$IMAGE_TAG
   before_script:
     - chmod +x connect_k8s.sh
@@ -12,6 +19,7 @@ connect_k8s:
     - . connect_k8s.sh
 
 install_helm:
+  stage: install
   image: $IMAGE_NAME:$IMAGE_TAG
   before_script:
     - curl -fsSL -o get_helm.sh https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 && \
@@ -20,11 +28,13 @@ install_helm:
     - ./get_helm.sh
 
 install_kubectl:
+  stage: install
   image: $IMAGE_NAME:$IMAGE_TAG
   script:
     - curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
 
 helm_deploy:
+  stage: deploy
   image: $IMAGE_NAME:$IMAGE_TAG
   before_script:
     - kubectl create ns $NAMESPACE
@@ -32,6 +42,7 @@ helm_deploy:
     - helm install $JOB_NAME ./helm-job --values ./helm-job/values.yaml -n $NAMESPACE
 
 job_test:
+  stage: test
   image: $IMAGE_NAME:$IMAGE_TAG
   script:
     - kubectl get all -n $NAMESPACE
