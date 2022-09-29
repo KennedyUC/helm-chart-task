@@ -1,41 +1,41 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ .Values.frontend.name }}
+  name: {{ .Values.app.name }}-frontend
 spec:
   selector:
     matchLabels:
-      service: {{ .Values.frontend.name }}
+      service: {{ .Values.app.name }}-frontend
   replicas: {{ .Values.frontend.replicas }}
   template:
     metadata:
       annotations:
         checksum/config: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
       labels:
-        service: {{ .Values.frontend.name }}
+        service: {{ .Values.app.name }}-frontend
         api: external
     spec:
       containers:
       - image: {{ .Values.frontend.image }}:{{ .Values.frontend.tag }}
-        name: {{ .Values.frontend.name }}
+        name: {{ .Values.app.name }}-frontend
         imagePullPolicy: Always
         ports:
         - containerPort: 80
         resources:
-          {{- if .Values.deployment.resources.requests }}
+          {{- if .Values.frontend.resources.requests }}
           requests:
-            memory: {{ .Values.deployment.resources.requests.memory | default "64Mi" | quote }}
-            cpu: {{ .Values.deployment.resources.requests.cpu | default "250m" | quote }}
+            memory: {{ .Values.frontend.resources.requests.memory | default "64Mi" | quote }}
+            cpu: {{ .Values.frontend.resources.requests.cpu | default "250m" | quote }}
           {{- else }}
           requests:
             memory: "64Mi"
             cpu: "250m"
           {{- end }}
 
-          {{- if .Values.deployment.resources.limits }}
+          {{- if .Values.frontend.resources.limits }}
           limits:
-            memory: {{ .Values.deployment.resources.limits.memory | default "1024Mi" | quote }}
-            cpu: {{ .Values.deployment.resources.limits.cpu | default "500m" | quote }}
+            memory: {{ .Values.frontend.resources.limits.memory | default "1024Mi" | quote }}
+            cpu: {{ .Values.frontend.resources.limits.cpu | default "500m" | quote }}
           {{- else }}
           limits:
             memory: "1024Mi"

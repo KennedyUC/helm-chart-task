@@ -1,38 +1,38 @@
 kind: Deployment
 apiVersion: apps/v1
 metadata:
- name: {{ .Values.backend.name }}
+ name: {{ .Values.app.name }}-backend
 spec:
   selector:
     matchLabels:
-      service: {{ .Values.backend.name }}
+      service: {{ .Values.app.name }}-backend
   replicas: {{ .Values.backend.replicas }}
   template:
     metadata:
       annotations:
         checksum/config: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
       labels:
-        service: {{ .Values.backend.name }}
+        service: {{ .Values.app.name }}-backend
     spec:
       containers:
       - image: {{ .Values.backend.image }}:{{ .Values.backend.tag }}
-        name: {{ .Values.backend.name }}
+        name: {{ .Values.app.name }}-backend
         imagePullPolicy: Always
         resources:
-          {{- if .Values.deployment.resources.requests }}
+          {{- if .Values.backend.resources.requests }}
           requests:
-            memory: {{ .Values.deployment.resources.requests.memory | default "100Mi" | quote }}
-            cpu: {{ .Values.deployment.resources.requests.cpu | default "10m" | quote }}
+            memory: {{ .Values.backend.resources.requests.memory | default "100Mi" | quote }}
+            cpu: {{ .Values.backend.resources.requests.cpu | default "10m" | quote }}
           {{- else }}
           requests:
             memory: "100Mi"
             cpu: "10m"
           {{- end }}
 
-          {{- if .Values.deployment.resources.limits }}
+          {{- if .Values.backend.resources.limits }}
           limits:
-            memory: {{ .Values.deployment.resources.limits.memory | default "2048Mi" | quote }}
-            cpu: {{ .Values.deployment.resources.limits.cpu | default "500m" | quote }}
+            memory: {{ .Values.backend.resources.limits.memory | default "2048Mi" | quote }}
+            cpu: {{ .Values.backend.resources.limits.cpu | default "500m" | quote }}
           {{- else }}
           limits:
             memory: "2048Mi"

@@ -1,3 +1,6 @@
+app:
+  name: "udagram"
+
 secret:
   access_key_id: "YXdzX2FjY2Vzc19rZXlfaWQgPSBBS0lBWlVaVFVRV0VPTEhFNFVXVQphd3Nfc2VjcmV0X2FjY2Vz"
   secret_access_key: "c19rZXkgPSBNakxKSXRhUVlLc2pMWDJXS1VqYTlDSUtUUWdVRURLelJJWnZNMncwCg=="
@@ -5,7 +8,6 @@ secret:
   postgres_password: "cHNxbDE0NzA="
 
 config:
-  name: "env-config"
   host: "udagram-db-dev.cwqsxxb7gfqx.us-east-1.rds.amazonaws.com"
   database: "postgres"
   bucket: "udagram-kennedy-bucket-3"
@@ -15,28 +17,37 @@ config:
   end_point: "http://localhost:8100"
 
 backend:
-  name: "udagram-backend"
   replicas: "2"
   image: "kennedyuche/udagram-api-feed"
   tag: "latest"
-
-frontend:
-  name: "udagram-frontend"
-  replicas: "1"
-  image: "kennedyuche/udagram-frontend"
-  tag: "latest"
-
-proxy:
-  name: "reverse-proxy"
-  replicas: "1"
-  image: "kennedyuche/reverseproxy"
-  tag: "latest"
-
-deployment:
   resources:
     requests:
       memory: "50Mi"
       cpu: "20m"
     limits:
-      memory:
+      memory: ""
+      cpu:
+
+frontend:
+  replicas: "1"
+  image: "kennedyuche/udagram-frontend"
+  tag: "latest"
+  resources:
+    requests:
+      memory: "50Mi"
+      cpu: "20m"
+    limits:
+      memory: ""
+      cpu:
+
+proxy:
+  replicas: "1"
+  image: "kennedyuche/reverseproxy"
+  tag: "latest"
+  resources:
+    requests:
+      memory: "50Mi"
+      cpu: "20m"
+    limits:
+      memory: ""
       cpu:

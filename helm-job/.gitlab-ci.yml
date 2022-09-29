@@ -1,0 +1,38 @@
+variables:
+  IMAGE_NAME: ubuntu
+  IMAGE_TAG: '20.04'
+  NAMESPACE: helm-app
+  JOB_NAME: helm-job
+
+connect_k8s:
+  image: $IMAGE_NAME:$IMAGE_TAG
+  before_script:
+    - chmod +x connect_k8s.sh
+  script:
+    - . connect_k8s.sh
+
+install_helm:
+  image: $IMAGE_NAME:$IMAGE_TAG
+  before_script:
+    - curl -fsSL -o get_helm.sh https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 && \
+      chmod 700 get_helm.sh
+  script:
+    - ./get_helm.sh
+
+install_kubectl:
+  image: $IMAGE_NAME:$IMAGE_TAG
+  script:
+    - curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
+
+helm_deploy:
+  image: $IMAGE_NAME:$IMAGE_TAG
+  before_script:
+    - kubectl create ns $NAMESPACE
+  script:
+    - helm install $JOB_NAME ./helm-job --values ./helm-job/values.yaml -n $NAMESPACE
+
+job_test:
+  image: $IMAGE_NAME:$IMAGE_TAG
+  script:
+    - kubectl get all -n $NAMESPACE
+    - helm list

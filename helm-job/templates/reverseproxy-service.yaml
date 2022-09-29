@@ -2,13 +2,13 @@ apiVersion: v1
 kind: Service
 metadata:
   labels:
-    service: {{ .Values.proxy.name }}
-  name: {{ .Values.proxy.name }}
+    service: {{ .Values.app.name }}-proxy
+  name: {{ .Values.app.name }}-proxy
 spec:
   ports:
   - name: "8080"
     port: 8080
     targetPort: 8080
   selector:
-    service: {{ .Values.proxy.name }}
+    service: {{ .Values.app.name }}-proxy
   type: ClusterIP
