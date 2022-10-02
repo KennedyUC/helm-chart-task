@@ -27,22 +27,6 @@ log "✅ successfully connected to k8s cluster"
 
 sleep 2s
 
-# install helm cli
-log "✅ installing helm cli..."
-curl -fsSL -o get_helm.sh https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3
-chmod 700 get_helm.sh
-./get_helm.sh
-log "✅ helm cli successfully installed"
-
-sleep 2s
-
-# install helm cm-push plugin
-log "✅ installing plugin..."
-helm plugin install https://github.com/chartmuseum/helm-push
-log "✅ helm cm-push plugin successfully installed"
-
-sleep 2s
-
 # install kubectl
 log "✅ installing kubectl..."
 curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
@@ -63,7 +47,7 @@ fi;
 sleep 2s
 
 # deploy helm app
-log "✅ deploying helm app..."
+log "✅ deploying helm app from the helm chart package..."
 helm repo add --username udagram --password $TOKEN helm-chart-task ${API_URL}/${PROJECT_ID}/packages/helm/stable
 helm upgrade $APP_NAME helm-chart-task/${HELM_CHART} --install --values ${HELM_CHART}/values.yaml -n $APP_NAME
 log "✅ $APP_NAME successfully deployed to k8s cluster"
@@ -74,6 +58,6 @@ sleep 1m
 log "✅ displaying the deployed app..."
 helm list -n $APP_NAME
 
-sleep 3m
+sleep 4m
 
 kubectl get all -n $APP_NAME
