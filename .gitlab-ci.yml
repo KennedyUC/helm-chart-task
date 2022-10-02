@@ -1,10 +1,22 @@
 variables:
   IMAGE_NAME: kennedyuche/ubuntu-base
-  IMAGE_TAG: v1
+  IMAGE_TAG: latest
   APP_NAME: helm-app
+  HELM_CHART: udagram
+  API_URL: https://gitlab.com/api/v4/projects
 
 stages:
+  - package
   - deploy
+
+package_chart:
+  stage: package
+  image: $IMAGE_NAME:$IMAGE_TAG
+  script:
+    - helm package $HELM_CHART
+    - 'curl --request POST --user udagram:$TOKEN --form "chart=@${HELM_CHART}-0.1.0.tgz" "${API_URL}/${PROJECT_ID}/packages/helm/api/helm/charts"'
+    - helm repo add --username udagram --password $TOKEN helm-chart-task ${API_URL}/${PROJECT_ID}/packages/helm/stable
+    - helm cm-push ${HELM_CHART}-0.1.0.tgz helm-chart-task 
 
 deploy_app:
   stage: deploy

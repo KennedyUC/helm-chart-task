@@ -4,12 +4,8 @@ This repository contains the scripts for deploying an Udagram application using 
 
 ## Repository Architecture 
 
-helm-chart-task
-    ├───udagram
-    │   ├───charts
-    │   └───templates
-    ├───k8s-manifests
-    └───ubuntu-base  
+helm-chart-task  
+![repo-tree](./images/repo-tree.PNG) 
 
 **`helm-chart-task`**: This is the root directory containing other directories, gitlab ci script and helper shell script.  
 
