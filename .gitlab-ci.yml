@@ -6,7 +6,7 @@ variables:
 stages:
   - deploy
 
-connect_k8s:
+deploy_app:
   stage: deploy
   image: $IMAGE_NAME:$IMAGE_TAG
   before_script:
