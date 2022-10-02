@@ -18,7 +18,7 @@ config:
 
 backend:
   replicas: "2"
-  image: "kennedyuche/udagram-api-feed"
+  image: "kennedyuche/udagram-backend"
   tag: "latest"
   resources:
     requests:
@@ -42,8 +42,8 @@ frontend:
 
 proxy:
   replicas: "1"
-  image: "kennedyuche/reverseproxy"
-  tag: "latest"
+  image: "kennedyuche/udagram-reverseproxy"
+  tag: "v1"
   resources:
     requests:
       memory: "50Mi"

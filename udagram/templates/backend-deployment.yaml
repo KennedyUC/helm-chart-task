@@ -43,54 +43,54 @@ spec:
         - name: URL
           valueFrom:
             configMapKeyRef:
-              name: env-config
+              name: {{ .Values.app.name }}-env
               key: URL
         - name: AWS_BUCKET
           valueFrom:
             configMapKeyRef:
-              name: env-config
+              name: {{ .Values.app.name }}-env
               key: AWS_BUCKET
         - name: AWS_PROFILE
           valueFrom:
             configMapKeyRef:
-              name: env-config
+              name: {{ .Values.app.name }}-env
               key: AWS_PROFILE
         - name: AWS_REGION
           valueFrom:
             configMapKeyRef:
-              name: env-config
+              name: {{ .Values.app.name }}-env
               key: AWS_REGION
         - name: JWT_SECRET
           valueFrom:
             configMapKeyRef:
-              name: env-config
+              name: {{ .Values.app.name }}-env
               key: JWT_SECRET
         - name: POSTGRES_DB
           valueFrom:
             configMapKeyRef:
-              name: env-config
+              name: {{ .Values.app.name }}-env
               key: POSTGRES_DB
         - name: POSTGRES_HOST
           valueFrom:
             configMapKeyRef:
-              name: env-config
+              name: {{ .Values.app.name }}-env
               key: POSTGRES_HOST
         - name: POSTGRES_PASSWORD
           valueFrom:
             secretKeyRef:
-              name: env-secret
+              name: {{ .Values.app.name }}-env
               key: POSTGRES_PASSWORD
         - name: POSTGRES_USERNAME
           valueFrom:
             secretKeyRef:
-              name: env-secret
+              name: {{ .Values.app.name }}-env
               key: POSTGRES_USERNAME
         volumeMounts:
-        - name: aws-secret
+        - name: {{ .Values.app.name }}-aws
           mountPath: "/root/.aws/"
           readOnly: true
       restartPolicy: Always
       volumes:
-      - name: aws-secret
+      - name: {{ .Values.app.name }}-aws
         secret:
-          secretName: aws-secret
+          secretName: {{ .Values.app.name }}-aws
